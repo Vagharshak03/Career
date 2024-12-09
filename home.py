@@ -30,5 +30,18 @@ def register():
 def login():
     return render_template("login.html")
 
+@app.route('/add')
+def create():
+    return render_template("create.html")
+#
+# @app.route('/edit')
+# def edit():
+#     return render_template("edit.html")
+#
+# @app.route('/delete')
+# def delete():
+#     return render_template("delete.html")
+
+
 if __name__ == '__main__':
     app.run(port='8000', debug=True)

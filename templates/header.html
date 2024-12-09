@@ -1,7 +1,7 @@
 <header class="blog-header py-3">
   <div class="row flex-nowrap justify-content-between align-items-center">
     <div class="col-4 pt-1">
-      <a class="text-muted" href="/">Something</a>
+      <a class="text-muted" href="/add">Create post/Add info</a>
     </div>
     <div class="col-4 text-center">
       <a class="blog-header-logo text-dark" href="#">Career</a>
@@ -17,6 +17,7 @@
   </div>
 </header>
 
+  {% if crud is not defined and post_header %}
   <div class="nav-scroller py-1 mb-2">
     <nav class="nav d-flex justify-content-between">
       <a class="p-1 text-muted" href="/it">IT</a>
@@ -28,3 +29,4 @@
       <a class="p-1 text-muted" href="/tourism">Tourism</a>
     </nav>
   </div>
+  {% endif %}
