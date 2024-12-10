@@ -21,6 +21,12 @@ h1, h2, h3, h4, h5, h6 {
 .display-4 {
     font-size: 2.5rem;
 }
+
+.gif-image{
+    background-size: 50% 94%;
+    background-position: right;
+    background-repeat: no-repeat;
+}
 @media (min-width: 768px) {
     .display-4 {
         font-size: 3rem;
@@ -129,4 +135,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .blog-footer p:last-child {
     margin-bottom: 0;
+}
+
+.strong-bold{
+    font-weight: 900;
 }

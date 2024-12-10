@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Account</title>
+{% endblock %}
+
+{% block content %}
+<br>
+<h1 class="text-center">Configure Account</h1>
+<form class="m-5">
+    <div class="form-group">
+        <label for="inputName">Change Name: </label>
+        <br>
+        <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp" value="{{ user.name }}">
+    </div>
+    <div class="form-group">
+        <label for="inputSurname">Change Surname: </label>
+        <br>
+        <input type="text" class="form-control" id="inputSurname" aria-describedby="emailHelp" value="{{ user.surname }}">
+    </div>
+    <div class="form-group">
+        <label for="inputEmail">Change Email Address: </label>
+        <br>
+        <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" value="{{ user.email }}">
+    </div>
+    <div class="form-group">
+        <label for="inputPassword">Change Password: </label>
+        <br>
+        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+    </div>
+    <div class="form-group">
+        <label for="confirmPassword">Confirm Password: </label>
+        <br>
+        <input type="password" class="form-control" id="confirmPassword" placeholder="Password">
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary mx-auto text-center w-100">Submit</button>
+
+</form>
+{% endblock %}

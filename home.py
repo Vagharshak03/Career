@@ -1,21 +1,13 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash
-from db import initialize_table, add_user, check_user
+from db import initialize_table, add_user, get_user, check_user
+import os
+
 
 app = Flask(__name__)
 
-# Secret key for session management
-app.secret_key = "your_secret_key"  # Make sure to change this in production!
+app.secret_key = os.urandom(24)  # This generates a random secret key. You can set it manually.
 
-# PostgreSQL database URI
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:@localhost:5432/users'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Initialize the app with the db instance
 initialize_table()
-@app.route('/set_session')
-def set_session(params):
-    session = params
-    return redirect(url_for('/'))  # Redirect to another route
 
 @app.route("/healthcare")
 @app.route("/it")
@@ -25,15 +17,34 @@ def set_session(params):
 @app.route("/art-media")
 @app.route("/tourism")
 def career():
-    parameters = {'curr_dir' : request.path[1:].capitalize()}
-    return render_template("career.html", params=parameters)
+    return render_template("career.html", curr_dir=request.path[1:].capitalize(), user = session)
 @app.route('/')
 def home():
-    return render_template("index.html")
+    if 'id' in session:
+        db_user, response = get_user(session['id'])
+        session['email'] = db_user['email']
+        session['name'] = db_user['name']
+        session['surname'] = db_user['surname']
+    else:
+        user = None
+    return render_template("index.html", user = session)
 
-@app.route('/subscribe')
-def subscribe():
-    return render_template("checkout.html")
+
+@app.route('/account')
+def account():
+    return render_template("account.html", user = session)
+
+@app.route('/post/<crud>')
+def crud(crud):
+
+    return render_template("crud.html", action=crud.capitalize(), user = session)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash("You have been logged out.", "info")
+    return redirect(url_for('login'))
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -50,8 +61,8 @@ def register():
         # Call the add_user function
         response, status_code = add_user(name, surname, email, password)
         if status_code == 201:
-            flash("Registration successful! Please log in.", "success")
-            return redirect(url_for('login'))
+            session['id'] = response['id']
+            return redirect(url_for('home'))
         else:
             flash(response["error"], "danger")
             return redirect(url_for('register'))
@@ -70,30 +81,22 @@ def login():
         if not email or not password:
             return jsonify({"error": "Email and password are required."}), 400
 
-        # Check user credentials
         result, status_code = check_user(email, password)
         if status_code == 200:
+            session['id'] = result["id"]
             return jsonify({"message": "Login successful"}), 200
         else:
             return jsonify({"error": "Invalid email or password"}), 401
-    return render_template("login.html")
 
-@app.route('/add')
-def create():
-    return render_template("create.html")
-#
-# @app.route('/edit')
-# def edit():
-#     return render_template("edit.html")
-#
-# @app.route('/delete')
-# def delete():
-#     return render_template("delete.html")
+    return render_template("login.html")
 
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=8000, debug=True)
 
+# PostgreSQL database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:@localhost:5432/career'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 

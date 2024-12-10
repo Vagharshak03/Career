@@ -1,0 +1,47 @@
+{% extends 'index.html' %}
+{% block head %}
+<title>{{ params.curr_dir}}</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    {% set post_header = true %}
+
+    <a href="/"><button class="btn btn-secondary float-left"> <- Go Back</button></a>
+    <br>
+    <br>
+    <h1 class="text-center">{{ action }} Post</h1>
+
+    <!-- Create Form -->
+    <div class="card mt-4">
+<!--        <div class="card-header bg-primary text-white">-->
+<!--            <h4>Add New Record</h4>-->
+<!--        </div>-->
+        <div class="card-body">
+            <form id="crudForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" placeholder="Enter phone number">
+                </div>
+                <button type="submit" class="btn btn-success">Add Record</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+<script>
+    // JavaScript logic to handle form submission and manage records will go here.
+</script>
+</body>
+</html>
