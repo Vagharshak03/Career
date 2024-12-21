@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+{% block head %}
+<title>{{ action }} Post</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    {% set post_header = true %}
+
+    <a href="/">
+        <button class="btn btn-secondary float-left"><- Go Back</button>
+    </a>
+    <br>
+    <br>
+
+    <h1 class="text-center">{{ action }} Post</h1>
+    <!-- Create Form -->
+    <div class="card mt-4">
+
+        <div class="card-body">
+            <form id="crudForm" method="POST"  enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" id="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Content</label>
+                    <textarea name="content" class="form-control" id="email" required rows="8" cols="50"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload image:</label>
+                    <input type="file" name="image" class="form-label" id="image" accept="image/*">
+                </div>
+                <input type="hidden" name="referrer" value="{{ referrer }}">
+
+                <button type="submit" class="btn btn-success">Add Post</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

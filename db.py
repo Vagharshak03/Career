@@ -66,9 +66,9 @@ def initialize_table():
     CREATE TABLE IF NOT EXISTS posts (
         id SERIAL PRIMARY KEY,
         user_id INT NOT NULL,
-        domain TEXT NOT NULL,
+        domain VARCHAR(255) NOT NULL,
         title VARCHAR(255) NOT NULL,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        date  DATE,
         content TEXT NOT NULL,
         image TEXT,
         CONSTRAINT fk_user
@@ -99,11 +99,10 @@ def verify_password(hashed_password, plain_password):
     """Verify a hashed password against the plain text."""
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-def add_user(name, surname, email, password):
-    """Add a new user to the database."""
+def add_user(name, surname, email, password, role_id):
     insert_query = """
-    INSERT INTO users (name, surname, email, password)
-    VALUES (%s, %s, %s, %s)
+    INSERT INTO users (name, surname, email, password, role_id)
+    VALUES (%s, %s, %s, %s, %s )
     RETURNING id;
     """
     connection = None
@@ -112,7 +111,7 @@ def add_user(name, surname, email, password):
         connection = connect_db()
         with connection:
             with connection.cursor() as cursor:
-                cursor.execute(insert_query, (name, surname, email, hashed_password))
+                cursor.execute(insert_query, (name, surname, email, hashed_password, role_id))
                 user_id = cursor.fetchone()[0]
         return {"id": user_id}, 201
     except psycopg2.IntegrityError:
@@ -124,6 +123,61 @@ def add_user(name, surname, email, password):
     finally:
         connection.close()
 
+def add_post(user_id, domain, title, date, content, image):
+    add_post_query = """
+    INSERT INTO posts (user_id, domain, title, date, content, image)
+    VALUES (%s, %s, %s, %s, %s, %s)
+    RETURNING id;
+    """
+    connection = None
+    try:
+        connection = connect_db()
+        with connection:
+            with connection.cursor() as cursor:
+                cursor.execute(add_post_query, (user_id, domain, title, date, content, image))
+                post_id = cursor.fetchone()[0]
+        return {"id": post_id}, 201
+    except Exception as e:
+
+        if connection:
+            connection.rollback()
+            return {"error": str(e)}, 500
+    finally:
+        if connection:
+            connection.close()
+
+def get_posts(domain):
+        query = """
+        SELECT title, date, content, image FROM posts
+        WHERE domain = %s;
+        """
+        connection = None
+        try:
+            connection = connect_db()
+            with connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(query, (domain,))
+                    posts = cursor.fetchall()
+
+                    if posts:
+                        result = []
+                        for post in posts:
+                            title, date, content, image = post
+                            result.append({
+                                "title": title,
+                                "date": date,
+                                "content": content,
+                                "image": image
+                            })
+                        return {"posts": result}, 200  # Return all posts as a list
+                    else:
+                        return {"error": "No posts found."}, 404
+
+        except Exception as e:
+            return {"error": str(e)}, 500
+        finally:
+            if connection:
+                connection.close()
 
 def check_user(email, password):
     query = """

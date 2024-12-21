@@ -31,6 +31,20 @@
     <input type="email" name="email" id="inputEmail" class="form-control mb-3" placeholder="Email address" required="" autofocus="">
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+    <div class="text-left">
+        <label>Role: </label><br>
+        <input type="radio" id="student" name="role" value="student">
+        <label for="student">Student</label><br>
+        <input type="radio" id="organisation" name="role" value="organisation">
+        <label for="organisation">Organisation</label><br>
+    </div>
+    <div class="organisation">
+        <p>This is the organisation section.</p>
+    </div>
+
+    <div class="student">
+        <p>This is the student section.</p>
+    </div>
     <div class="checkbox mb-3">
         <label>
             <input type="checkbox" value="remember-me"> Remember me
@@ -43,6 +57,28 @@
     </p>
     <p class="text-muted">© 2024</p>
 </form>
+<script>
+    // Get the radio buttons and div elements
+    const studentRadio = document.getElementById('student');
+    const organisationRadio = document.getElementById('organisation');
+    const organisationDiv = document.querySelector('.organisation');
+    const studentDiv = document.querySelector('.student');
+
+    // Function to show/hide the corresponding div based on the selected role
+    function toggleRole() {
+        if (studentRadio.checked) {
+            studentDiv.style.display = 'block';
+            organisationDiv.style.display = 'none';
+        } else if (organisationRadio.checked) {
+            organisationDiv.style.display = 'block';
+            studentDiv.style.display = 'none';
+        }
+    }
+
+    // Add event listeners to the radio buttons
+    studentRadio.addEventListener('change', toggleRole);
+    organisationRadio.addEventListener('change', toggleRole);
+</script>
 
 <!-- Bootstrap core JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
