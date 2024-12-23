@@ -54,7 +54,7 @@
 
                             <div class="mb-1 text-muted">{{ post.date }}</div>
                             <p class="card-text mb-auto">{{ post.content | truncate(100) }}...</p>
-                            <a href="#">Continue reading</a>
+                            <a href="{{ page }}/{{ post.id }}">Continue reading</a>
                         </div>
                         <img class="card-img-right flex-auto d-none d-md-block my-auto" data-src="holder.js/200x250?theme=thumb"
                              alt="Thumbnail [200x250]"
@@ -63,7 +63,6 @@
                     </div>
                 </div>
                 {% endfor %}
-            {% else %}
             {% endif %}
 <!--            <div class="col-md-6">-->
 <!--                <div class="card flex-md-row mb-4 box-shadow h-md-250">-->

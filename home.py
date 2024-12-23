@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash
 from urllib.parse import urlparse
-from db import initialize_table, add_user, get_user, check_user, add_post, get_posts
+from db import initialize_table, add_user, get_user, check_user, add_post, get_posts, get_myposts, get_single_post
 from datetime import date
 import os
 
@@ -24,14 +24,23 @@ initialize_table()
 def career():
     path = request.path.strip("/")
     slug = path.split("/")[0]
-    empty_page = ""
     response, status_code = get_posts(slug)
     if "posts" in response and response["posts"]:
         posts = response["posts"]
     else:
         posts = ""
-        empty_page = "../static/images/nopostyet.png"
-    return render_template("career.html", curr_dir=request.path[1:].capitalize(), user = session, posts = posts, empty_page = empty_page)
+    return render_template("career.html", curr_dir=request.path[1:].capitalize(), user = session, posts = posts)
+
+@app.route('/<domain>/<post_id>')
+def single_post(domain, post_id):
+    response, status_code = get_single_post(post_id)
+    if "post" in response and response["post"]:
+        post = response["post"]
+    else:
+         post = None
+
+    return render_template("post.html", user = session, post = post)
+
 @app.route('/')
 def home():
     if 'id' in session:
@@ -54,9 +63,7 @@ def logout():
     flash("You have been logged out.", "info")
     return redirect(url_for('login'))
 
-@app.route('/it/aws')
-def aws_demo():
-    return render_template("posts.html", user = session, curr_dir = 'It')
+
 
 
 @app.route('/post/<crud>', methods=['GET', 'POST'])
@@ -157,6 +164,18 @@ def login():
             return jsonify({"error": "Invalid email or password"}), 401
 
     return render_template("login.html")
+
+@app.route('/myposts')
+def myposts():
+    user_id = session.get('id')
+    response, status_code = get_myposts(user_id)
+    if "posts" in response and response["posts"]:
+        posts = response["posts"]
+    else:
+        posts = ""
+
+    return render_template("myposts.html", user = session, posts = response)
+
 
 
 if __name__ == '__main__':

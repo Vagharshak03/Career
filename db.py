@@ -148,7 +148,7 @@ def add_post(user_id, domain, title, date, content, image):
 
 def get_posts(domain):
         query = """
-        SELECT title, date, content, image FROM posts
+        SELECT id, title, date, content, image FROM posts
         WHERE domain = %s;
         """
         connection = None
@@ -162,8 +162,9 @@ def get_posts(domain):
                     if posts:
                         result = []
                         for post in posts:
-                            title, date, content, image = post
+                            id, title, date, content, image = post
                             result.append({
+                                "id": id,
                                 "title": title,
                                 "date": date,
                                 "content": content,
@@ -178,6 +179,38 @@ def get_posts(domain):
         finally:
             if connection:
                 connection.close()
+
+def get_single_post(post_id):
+            query = """
+            SELECT id, title, date, content, image FROM posts
+            WHERE id = %s ;
+            """
+            connection = None
+            try:
+                connection = connect_db()
+                with connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute(query, (post_id,))
+                        post = cursor.fetchone()
+                        response = []
+                        if post:
+                            id, title, date, content, image = post
+                            response.append({
+                                "id": id,
+                                "title": title,
+                                "date": date,
+                                "content": content,
+                                "image": image
+                            })
+                            return {"post": response}, 200  # Return all posts as a list
+                        else:
+                            return {"error": "No posts found."}, 404
+
+            except Exception as e:
+                return {"error": str(e)}, 500
+            finally:
+                if connection:
+                    connection.close()
 
 def check_user(email, password):
     query = """
@@ -247,6 +280,38 @@ def get_user(user_id):
         if connection:
             connection.close()
 
+def get_myposts(user_id):
+        query = """
+        SELECT title, date, content, image FROM posts
+        WHERE user_id = %s;
+        """
+        connection = None
+        try:
+            connection = connect_db()
+            with connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(query, (user_id,))
+                    posts = cursor.fetchall()
+
+                    if posts:
+                        result = []
+                        for post in posts:
+                            title, date, content, image = post
+                            result.append({
+                                "title": title,
+                                "date": date,
+                                "content": content,
+                                "image": image
+                            })
+                        return {"posts": result}, 200  # Return all posts as a list
+                    else:
+                        return {"error": "No posts found."}, 404
+
+        except Exception as e:
+            return {"error": str(e)}, 500
+        finally:
+            if connection:
+                connection.close()
 
 if __name__ == "__main__":
     try:
