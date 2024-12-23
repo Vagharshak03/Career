@@ -189,7 +189,7 @@ def get_posts(domain):
 
 def get_single_post(post_id):
             query = """
-            SELECT id, title, date, content, image FROM posts
+            SELECT id, title, domain, date, content, image FROM posts
             WHERE id = %s ;
             """
             connection = None
@@ -201,10 +201,11 @@ def get_single_post(post_id):
                         post = cursor.fetchone()
                         response = []
                         if post:
-                            id, title, date, content, image = post
+                            id, title, domain, date, content, image = post
                             response.append({
                                 "id": id,
                                 "title": title,
+                                "domain": domain,
                                 "date": date,
                                 "content": content,
                                 "image": image
