@@ -4,25 +4,32 @@
 {% endblock %}
 
 {% block content %}
+{% set domains = ["it", "healthcare", "education", "engineering", "finance", "art-media", "tourism"] %}
+
+{% for domain in domains %}
+{% set domain_posts = posts | selectattr('domain', 'equalto', domain) | list %}
+{% if domain_posts|length > 0 %}
+<a href="/domain" class=" text-dark"><h1>{{ domain.capitalize().replace('-', ' ') }}</h1></a><br>
 <div class="row mb-2">
-    {% if posts != "" %}
-        {% for post in posts %}
-        <div class="col-md-6">
-            <div class="card flex-md-row mb-4 box-shadow">
-                <div class="card-body d-flex flex-column align-items-start">
-                    <strong class="d-inline-block mb-2 text-primary">{{ post.title }}</strong>
-
-
-                    <div class="mb-1 text-muted">{{ post.date }} - {{ post.domain}}</div>
-                    <p class="card-text mb-auto">{{ post.content | truncate(100) }}...</p>
-                    <a href="#">Continue reading</a>
-                </div>
-                <img class="card-img-right flex-auto d-none d-md-block my-auto" data-src="holder.js/200x250?theme=thumb"
-                     alt="Thumbnail [200x250]"
-                     src="../static/images/{{ post.image }}"
-                     data-holder-rendered="true" style="width: 250px; height: 180px;">
+    {% for post in domain_posts %}
+    <div class="col-md-6">
+        <div class="card flex-md-row mb-4 box-shadow">
+            <div class="card-body d-flex flex-column align-items-start">
+                <a href="{{ post.domain }}/{{ post.id }}"><strong class="d-inline-block mb-2 text-primary ">{{ post.title }}</strong></a>
+                <div class="mb-1 text-muted">{{ post.date }} - {{ post.domain }}</div>
+                <p class="card-text mb-auto">{{ post.content | truncate(100) }}...</p>
+                <a href="{{ post.domain }}/{{ post.id }}">Continue reading</a>
             </div>
+            <img class="card-img-right flex-auto d-none d-md-block my-auto" data-src="holder.js/200x250?theme=thumb"
+                 alt="Thumbnail [200x250]"
+                 src="../static/images/{{ post.image }}"
+                 data-holder-rendered="true" style="width: 250px; height: 180px;">
         </div>
-        {% endfor %}
-    {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+
+
 {% endblock %}

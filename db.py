@@ -289,7 +289,7 @@ def get_user(user_id):
 
 def get_myposts(user_id):
         query = """
-        SELECT title, domain, date, content, image FROM posts
+        SELECT id, title, domain, date, content, image FROM posts
         WHERE user_id = %s;
         """
         connection = None
@@ -303,8 +303,9 @@ def get_myposts(user_id):
                     if posts:
                         result = []
                         for post in posts:
-                            title, domain, date, content, image = post
+                            id, title, domain, date, content, image = post
                             result.append({
+                                "id": id,
                                 "title": title,
                                 "domain": domain,
                                 "date": date,
