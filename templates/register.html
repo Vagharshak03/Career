@@ -20,8 +20,10 @@
 
 <body class="text-center">
 <form class="form-signin" action="/register" method="POST">
+    <a href="{{ url_for('home') }}">
     <img class="mb-4" src="../static/images/c.png" alt="" width="72"
          height="72">
+        </a>
     <h1 class="h3 mb-3 font-weight-normal">Please Register</h1>
     <label for="inputName" class="sr-only">Name</label>
     <input type="text" name="name" id="inputName" required="" class="form-control mb-3" placeholder="Name">

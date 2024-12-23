@@ -78,12 +78,19 @@ def initialize_table():
     );
 
     """
+    insert_roles_query = """
+        INSERT INTO role (name) VALUES 
+        ('student'),
+        ('employer')
+        ON CONFLICT DO NOTHING;
+        """
     connection = None
     try:
         connection = connect_db()
         with connection:
             with connection.cursor() as cursor:
                 cursor.execute(create_tables_query)
+                cursor.execute(insert_roles_query)
         logging.info("Users table is ready.")
     except Exception as e:
         logging.error(f"Error initializing table: {e}")
@@ -257,7 +264,7 @@ def get_user(user_id):
 
         # Query to select the user by ID
         query = """
-        SELECT id, name, surname, email FROM users WHERE id = ' %s';
+        SELECT id, name, surname, email FROM users WHERE id = '%s';
         """
         cursor = connection.cursor()
         cursor.execute(query, (user_id,))
