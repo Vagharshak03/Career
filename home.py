@@ -174,7 +174,7 @@ def myposts():
     else:
         posts = ""
 
-    return render_template("myposts.html", user = session, posts = response)
+    return render_template("myposts.html", user = session, posts = posts)
 
 
 
